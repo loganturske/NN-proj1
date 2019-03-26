@@ -1,0 +1,75 @@
+import math
+
+class Perceptron:
+
+	# weights 	= None
+	# activation 	= None
+	# activity 	= None
+	# delta 		= None
+	# eta			= None
+
+	def __init__(self, weights, bias, desired_output, inputs, eta):
+		self.weights = weights
+		self.bias = bias
+		self.desired_output = desired_output
+		self.inputs = inputs
+		self.eta = eta
+		self.old_weights = None
+
+	def print(self):
+		print("Weights   : " + str(self.weights))
+		print("Activity  : " + str(self.activity))
+		print("Activation: " + str(self.activation))
+		print("Delta     : " + str(self.delta))
+		print("Eta 		 : " + str(self.eta))
+		print("Inputs    : " + str(self.inputs))
+		print("Old       : " + str(self.old_weights))
+
+	def calc_activity(self):
+		# Error checking to see if everything matches
+		if len(self.inputs) is not len(self.weights):
+			print("Error: calc_activity")
+			print("		len(vector) : " + str(len(self.inputs)))
+			print("		len(weights): " + str(len(self.weights)))
+
+		# Set a running total
+		running_total = 0
+		# Sum all the weights*inputs
+		for index in range(len(self.inputs)):
+			running_total += self.inputs[index] * self.weights[index]
+
+		self.activity = running_total + self.bias
+
+	def calc_activation(self, activity_value):
+		# Sigmoidal
+		self.activation = 1/(1+math.exp(-1*activity_value+self.bias))
+
+	def set_delta_weights(self):
+		self.calc_delta()
+		for index in range(len(self.weights)):
+			self.old_weights[index] = self.weights[index]
+			self.weights[index] = (self.weights[index]) + (self.eta * self.delta)*self.inputs[index]
+
+	def update_weights(self, weights):
+		self.weights = weights
+	def get_activation(self):
+		return self.activation
+	def calc_delta(self):
+		self.delta = (self.desired_output - self.activation)*(1-self.activation)*self.activation
+
+# inputs = [.8,.9]
+# weights = [.24,.88]
+# desired_output = .15
+# bias = 0
+# eta = 5.0
+
+# p1 = Perceptron(weights, bias, desired_output, inputs, eta)
+
+# for i in range(30):
+# 	p1.calc_activity()
+# 	p1.calc_activation(p1.activity)
+# 	p1.calc_delta()
+# 	p1.set_delta_weights()
+
+# p1.calc_activation(p1.activity)
+# p1.print()
